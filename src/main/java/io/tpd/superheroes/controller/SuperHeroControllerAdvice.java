@@ -1,6 +1,7 @@
 package io.tpd.superheroes.controller;
 
 import io.tpd.superheroes.controller.errors.SuperHeroAppError;
+import io.tpd.superheroes.exceptions.NonAllowedHeroException;
 import io.tpd.superheroes.exceptions.NonExistingHeroException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,11 +34,27 @@ public class SuperHeroControllerAdvice {
                 ex.getErrorCode(),
                 "This superhero is hiding in the cave",
                 "superhero-exceptions",
-                "You can't find this superhero right now. Try later.",
+                ex.getMessage(),
                 "Saving someone",
                 sendReportUri
         );
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND); // 404
+    }
+
+    @ExceptionHandler(NonAllowedHeroException.class)
+    public ResponseEntity<SuperHeroAppError> handleNonExistingHero(HttpServletRequest request,
+                                                                   NonAllowedHeroException ex) {
+        final SuperHeroAppError error = new SuperHeroAppError(
+                currentApiVersion,
+                ex.getErrorCode(),
+
+                "This superhero operation is not allowed",
+                "superhero-exceptions",
+                ex.getMessage(),
+                "Saving someone",
+                sendReportUri
+        );
+        return new ResponseEntity<>(error, HttpStatus.METHOD_NOT_ALLOWED); // 405
     }
 
 }

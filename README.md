@@ -1,5 +1,30 @@
 # Handling errors in REST Controllers with Spring Boot
 
+CLONED from https://github.com/mechero/spring-boot-rest-exceptions
+
+Experimenting with custom error responses
+
+## Testing
+
+### Get DATA
+```
+curl --location --request GET 'http://localhost:8080/superheroes/2' -I
+curl --location --request GET 'http://localhost:8080/superheroes/3' -I
+curl --location --request GET 'http://localhost:8080/superheroes/4' -I
+```
+
+### Test error handlers
+
+405
+```
+curl --location --request GET 'http://localhost:8080/superheroes/1' -I
+```
+
+404
+```
+curl --location --request GET 'http://localhost:8080/superheroes/1000' -I
+```
+
 ## Goal 
 
 This sample code shows how configure a Spring Boot application to properly handle all exceptions and create your custom error format.

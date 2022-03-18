@@ -1,6 +1,7 @@
 package io.tpd.superheroes.repository;
 
 import io.tpd.superheroes.domain.SuperHero;
+import io.tpd.superheroes.exceptions.NonAllowedHeroException;
 import io.tpd.superheroes.exceptions.NonExistingHeroException;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ class SuperHeroRepositoryImpl implements SuperHeroRepository {
 
     @Override
     public SuperHero getSuperHero(int id) {
+//        if (id == 1) throw new NonAllowedHeroException("FOOBAR"); // Deeper
         if (id > superHeroList.size()) throw new NonExistingHeroException("Sorry, there are only 4 superheroes...");
         return superHeroList.get(id - 1);
     }

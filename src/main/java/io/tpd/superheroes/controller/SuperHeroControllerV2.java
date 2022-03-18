@@ -12,34 +12,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+// Can only be applied at controller level, not mappings.  If we want to turn on/off different mappings,
+// we need to have different controllers, if using the annotation.
+@ConditionalOnProperty(name = "superheroes.features.v2Enabled", havingValue = "true") // Causes a 404
 @RestController
-@RequestMapping("/superheroes")
-public final class SuperHeroController {
-
-    @Value("${superheroes.features.endpointAllowed}")
-    private Boolean endpointAllowed;  // TODO next, how do we add dynamic toggles that do not require the instance to restart? review SpringCloud, Unleash etc.
+@RequestMapping("/superheroes/v2")
+public final class SuperHeroControllerV2 {
 
     private final SuperHeroRepository superHeroRepository;
 
     @Autowired
-    public SuperHeroController(SuperHeroRepository superHeroRepository) {
+    public SuperHeroControllerV2(SuperHeroRepository superHeroRepository) {
         this.superHeroRepository = superHeroRepository;
     }
 
     @GetMapping("/{id}")
     public SuperHero getSuperHeroById(@PathVariable int id) {
-        if (endpointAllowed == false) {
-            // As an extra step we can add more check in code
-            throw new NonAllowedHeroException("YOU CANT DO THIS - YOU HAVE BEEN REPORTED!");
-        }
         return superHeroRepository.getSuperHero(id);
     }
-
-//    @ConditionalOnProperty(name = "superheroes.features.v2Enabled", havingValue = "true")
-//    @GetMapping("/v2/{id}") // test how ConditionalOnProperty works
-//    public SuperHero getSuperHeroById405(@PathVariable int id) {
-//        return superHeroRepository.getSuperHero(id);
-//    }
 
     @GetMapping
     public Optional<SuperHero> getSuperHeroByHeroName(@RequestParam("name") String heroName) {
